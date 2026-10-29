@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Explore numerical letter values across the Hebrew Torah and Arabic Quran, verse by verse.">
+  <title>Gameatria | A numerical scripture reader</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./mobile.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Gameatria home"><span class="brand-symbol">א<span class="dot">·</span>ا</span><span class="brand-name">Gameatria<span class="brand-suffix">/ scripture laboratory</span></span></a>
+    <div class="header-search"><label class="sr-only" for="textSearch">Search scripture</label><span class="search-icon">⌕</span><input id="textSearch" type="search" placeholder="Find words, references, or verses" autocomplete="off"><kbd>Enter</kbd></div>
+    <button class="quiet header-about" id="aboutButton" type="button">Methods &amp; sources <span aria-hidden="true">↗</span></button>
+  </header>
+  <div class="layout">
+    <aside class="left-pane" aria-label="Scripture navigation">
+      <div class="nav-label">LIBRARY <span>01 / 02</span></div>
+      <div class="corpus-toggle" role="group" aria-label="Choose scripture">
+        <button type="button" id="torahTab" class="active" aria-pressed="true"><span class="toggle-icon">✧</span> Torah</button>
+        <button type="button" id="quranTab" aria-pressed="false"><span class="toggle-icon">۞</span> Quran</button>
+      </div>
+      <div class="nav-heading"><span id="collectionKind">THE FIVE BOOKS</span><span id="collectionCount">05</span></div>
+      <input id="collectionFilter" type="search" class="filter-input" placeholder="Filter books or surahs..." aria-label="Filter books or surahs">
+      <nav id="collectionList" class="collection-list" aria-label="Book and surah list"></nav>
+      <div class="left-foot">
+        <span class="tiny-label">A READER BUILT FOR CLOSE STUDY</span>
+        <p>Every value is computed from the letters on the page. Select a verse to inspect the calculation.</p>
+        <a href="https://github.com/patrickdugan/Gameatria" target="_blank" rel="noopener">Source code <span>↗</span></a>
+      </div>
+    </aside>
+    <main class="main-pane">
+      <div class="reading-head">
+        <div>
+          <div class="eyebrow" id="corpusLabel">THE HEBREW TORAH / FIVE BOOKS OF MOSES</div>
+          <h1 id="collectionTitle">Genesis</h1>
+          <p class="collection-subtitle" id="collectionSubtitle">Bereshit · בְּרֵאשִׁית</p>
+        </div>
+        <div class="chapter-controls">
+          <button type="button" class="icon-button" id="prevChapter" aria-label="Previous chapter">←</button>
+          <label for="chapterSelect" class="sr-only">Jump to chapter</label>
+          <select id="chapterSelect" aria-label="Jump to chapter"><option>1</option></select>
+          <button type="button" class="icon-button" id="nextChapter" aria-label="Next chapter">→</button>
+        </div>
+      </div>
+      <div class="reader-meta">
+        <div class="meta-block"><span class="tiny-label">LETTER SYSTEM</span><select id="methodSelect" aria-label="Numerical calculation method"><option>Standard</option></select></div>
+        <div class="meta-block"><span class="tiny-label">VERSE COUNT</span><strong id="verseCount">5,853</strong></div>
+        <div class="meta-block hide-mobile"><span class="tiny-label">REFERENCE TEXT</span><strong id="editionName">Westminster Leningrad Codex</strong></div>
+        <div class="meta-block meta-action"><span class="tiny-label">DISPLAY</span><button type="button" id="toggleMarks" class="mini-button" aria-pressed="true">Marks on</button></div>
+      </div>
+      <div id="loadStatus" class="load-status" role="status" aria-live="polite">Loading reference texts…</div>
+      <div id="reader" class="reader" tabindex="0" aria-label="Scroll scripture">
+        <div id="chapterBlocks"></div>
+        <button type="button" class="next-batch" id="loadMore">Continue reading ↓</button>
+      </div>
+      <div class="reader-footnote"><span class="footnote-star">✳</span> Number patterns depend on the selected alphabet, orthography, and rules for special letter forms. <button type="button" id="footnoteAbout">Read the method</button></div>
+    </main>
+    <aside class="right-pane" aria-label="Numerical analysis">
+      <div class="inspector-head"><span>THE NUMERICAL LENS</span><span class="inspector-indicator"></span></div>
+      <div id="inspector">
+        <div class="detail-kicker">SELECT A VERSE</div>
+        <p>Choose a line of scripture to inspect word sums and individual letter values.</p>
+      </div>
+      <div class="match-panel">
+        <div class="divider-head"><span>FIND A NUMBER</span><span class="hairline"></span></div>
+        <p class="aside-copy">Find other verses with an identical total. Each scripture uses its own letter system.</p>
+        <form id="numberForm" class="number-form"><label class="sr-only" for="numberSearch">Exact numerical total</label><input type="number" min="0" step="1" id="numberSearch" placeholder="e.g. 2701" required><button type="submit">Find ↗</button></form>
+        <div id="numberMatches" class="match-results" aria-live="polite"></div>
+      </div>
+      <div class="research-note"><div class="note-mark">i</div><p>Equal numbers are observations about a chosen encoding. Their historical or theological significance requires separate evidence.</p></div>
+    </aside>
+  </div>
+  <dialog id="searchDialog" class="search-dialog">
+    <div class="dialog-header"><div><div class="eyebrow">SEARCH RESULTS</div><h2 id="searchTitle">Results</h2></div><button type="button" class="icon-button" id="closeSearch" aria-label="Close search">×</button></div>
+    <div id="searchResults" class="dialog-results"></div>
+  </dialog>
+  <dialog id="aboutDialog" class="about-dialog">
+    <div class="dialog-header"><div><div class="eyebrow">SCHOLARLY NOTES</div><h2>Methods &amp; text editions</h2></div><button type="button" class="icon-button" id="closeAbout" aria-label="Close methods">×</button></div>
+    <p>Gameatria uses established alphanumeric systems as reproducible calculations. The interface makes spelling, diacritics, final-letter conventions and verse boundaries inspectable.</p>
+    <h3>Hebrew Torah</h3><p>Standard <em>mispar heḥreḥi</em> assigns א–ט = 1–9, י–צ = 10–90, and ק–ת = 100–400. Final letters take their ordinary values. The large-finals variant treats ך ם ן ף ץ as 500, 600, 700, 800, 900. Ordinal assigns 1–22; reduced letters use each standard value's digital root. Vowel points, cantillation and punctuation contribute zero.</p>
+    <h3>Arabic Quran</h3><p>Eastern <em>abjad</em> assigns 1–9, tens and hundreds through 1000 to the traditional abjad order. The Western historical variant changes the values of س ص ش ض ظ غ. Hamza, alif wasla, ta marbuta and alif maqsura follow documented normalization choices in this prototype. Qur'anic vowel and recitation marks contribute zero; an independent combining hamza contributes one.</p>
+    <p>The Tanzil Uthmani text places most unnumbered opening basmalas on the line of verse 1. Gameatria displays those formulas separately and excludes them from the verse's sum, following Tanzil's display recommendation. Surahs 95 and 97 have a distinctive opening bāʾ shadda. Surah 1:1 contains the numbered basmala, and surah 9 has none.</p>
+    <h3>Sources &amp; further reading</h3>
+    <ul class="source-links">
+      <li><a href="https://tanach.us/" target="_blank" rel="noopener">Westminster Leningrad Codex (WLC)</a>, as distributed by <a href="https://github.com/midvash/bible-data" target="_blank" rel="noopener">midvash/bible-data</a></li>
+      <li><a href="https://tanzil.net/docs/text_license" target="_blank" rel="noopener">Tanzil Project Uthmani Quran text</a>, © 2007–2024 Tanzil Project, Creative Commons Attribution 3.0; original text retained verbatim</li>
+      <li><a href="https://tanzil.net/docs/a_note_on_bismillah" target="_blank" rel="noopener">Tanzil: A Note on Bismillah</a></li>
+      <li>Johannes Thomann, <em>Scientific and Archaic Arabic Numerals: Origins, Usages and Scribal Traditions of the Two Abjad Systems</em>, <em>Sciamvs</em> 19 (2018)</li>
+      <li><a href="https://edition-open-sources.org/sources/14/2/index.html" target="_blank" rel="noopener">Al-Hawārī’s Essential Commentary</a>, Edition Open Sources, discussion of jummal reckoning</li>
+    </ul>
+    <p class="citation-warning">Letter mappings and normalizations are editorial parameters. Numerical coincidences should be assessed against text variants and multiple-testing effects.</p>
+    <button type="button" class="primary-close" id="doneAbout">Return to reading</button>
+  </dialog>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
